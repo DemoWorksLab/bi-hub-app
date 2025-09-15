@@ -26,4 +26,7 @@ class Identity(BaseModel):
     email: Optional[str] = None
     display_name: Optional[str] = None
     auth_type: Literal["obo", "pat"] = "pat"
+    # The token source that provides the bearer token for authentication
+    # Using Field(repr=False) to prevent the token from being exposed in string representations
+    # Type Any is used since TokenSource is a Protocol and can't be used directly in Pydantic
     token_source: Any = Field(repr=False)
