@@ -17,12 +17,12 @@ A Databricks App built with Chainlit that provides an intelligent chat interface
 - **Lakebase (Postgres)**: Stores session state and chat history 
 - **Comprehensive Logging**: MAS traces logged via MLflow 3.0 and can be loaded into Delta tables
 
-![Architecture Diagram](architecture.svg)
+![Architecture Diagram](./public/images/architecture.svg)
 
 
 ## Example (SAMPLE DUMMY DATA)
 
-![Demo](demo_gif.gif)
+![Demo](./public/images/demo_gif.gif)
 
 ## Quick Start
 
