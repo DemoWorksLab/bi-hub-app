@@ -3,21 +3,8 @@ from config import settings
 from typing import Dict, Optional
 from utils.logging import logger
 from auth.identity import OboTokenSource, Identity
-
-# Global storage for headers - workaround for Chainlit context issue
-_global_headers = {}
-
-def _headers_getter() -> Dict[str, str]:
-    # Try to get headers from global storage first
-    user = cl.user_session.get("user")
-    if user and user.identifier in _global_headers:
-        return _global_headers[user.identifier]
-    
-    # Fallback to request object (might be None on Databricks)
-    request = cl.user_session.get("request")
-    if request is None:
-        return {}
-    return request.headers or {}
+import jwt
+import datetime
 
 
 if settings.enable_header_auth:
@@ -29,13 +16,19 @@ if settings.enable_header_auth:
         if token and email:
             logger.info(f"[AUTH] Header auth success: {email}")
 
-            # Store headers in global storage for later use
-            _global_headers[email] = headers
+            decoded = jwt.decode(token, options={"verify_signature": False})
+            exp = datetime.datetime.fromtimestamp(
+                decoded["exp"], datetime.timezone.utc)
+            time_left = (
+                exp - datetime.datetime.now(datetime.timezone.utc)).total_seconds()
+            logger.info(
+                f"[AUTH] Header auth success: {email}, {exp}, {time_left} seconds left")
 
             user = cl.User(
                 identifier=email,
-                metadata={"auth_type": "obo"},
-                display_name=email,
+                metadata={"auth_type": "obo", "obo_token": token,
+                          "obo_token_expiry": exp.isoformat(), "headers": headers},
+                display_name=email.split("@")[0],
                 email=email,
                 provider="obo"
             )
@@ -44,5 +37,6 @@ if settings.enable_header_auth:
         logger.warning(
             "[AUTH] Header auth failed — rejecting request (no fallback in Databricks App)")
         return None  # No fallback inside Databricks app
+
 else:
     logger.info("Not running on Databricks — skipping header auth")
