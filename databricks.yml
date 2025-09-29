@@ -9,7 +9,7 @@ bundle:
 variables:
   app_name:
     description: "App name"
-    default: "bi-agent"
+    default: "bi-agent-v2"
 
   lakebase_instance_name:
     description: "Database instance name"
