@@ -17,7 +17,7 @@ variables:
 
   model_endpoint_name:
     description: "Databricks model serving endpoint name"
-    default: "mas-1a0aee60-endpoint"
+    default: "meta_llama_v3_1_70b"
 
   # Catalog configuration
   lakebase_database_name:
