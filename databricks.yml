@@ -7,7 +7,6 @@ bundle:
 
 # Variables for environment-specific configuration
 variables:
-  
   app_name:
     description: "App name"
     default: "bi-agent"
@@ -19,31 +18,31 @@ variables:
   model_endpoint_name:
     description: "Databricks model serving endpoint name"
     default: "mas-1a0aee60-endpoint"
-  
+
   # Catalog configuration
   lakebase_database_name:
     description: "Database name for database resources"
     default: "databricks_postgres"
-  
+
   synced_catalog_name:
     description: "Catalog name for database resources"
     default: "bi_agent_chat_sessions"
-  
+
   user_name:
     description: "User name for permissions"
-    default: "rohit.bhagwat@databricks.com"
+    default: "camilo.velez@bpt.com.co"
 
 sync:
   exclude:
-    - src/app/.env  
+    - src/app/.env
 
 targets:
   dev:
     mode: development
     default: true
     workspace:
-      host: https://adb-984752964297111.11.azuredatabricks.net
-    
+      host: https://adb-1626688704328437.17.azuredatabricks.net/
+
     resources:
       jobs:
         setup_lakebase:
@@ -79,21 +78,21 @@ targets:
         lakebase_postgres:
           name: ${var.lakebase_instance_name}
           capacity: "CU_1"
-      
+
       apps:
         bi-agent:
-          name: ${var.app_name} 
+          name: ${var.app_name}
           description: "AI-powered Business Intelligence Agent"
           resources:
-              - name: agent-endpoint
-                serving_endpoint:
-                  name: ${var.model_endpoint_name}
-                  permission: "CAN_QUERY"
-              - database:
-                  database_name: ${var.lakebase_database_name}
-                  instance_name: ${var.lakebase_instance_name}
-                  permission: CAN_CONNECT_AND_CREATE
-                name: database
+            - name: agent-endpoint
+              serving_endpoint:
+                name: ${var.model_endpoint_name}
+                permission: "CAN_QUERY"
+            - database:
+                database_name: ${var.lakebase_database_name}
+                instance_name: ${var.lakebase_instance_name}
+                permission: CAN_CONNECT_AND_CREATE
+              name: database
           user_api_scopes: ["serving.serving-endpoints"]
           source_code_path: ./src/app
           permissions:
