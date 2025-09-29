@@ -17,7 +17,7 @@ variables:
 
   model_endpoint_name:
     description: "Databricks model serving endpoint name"
-    default: "meta_llama_v3_1_70b"
+    default: "databricks-gpt-oss-120b"
 
   # Catalog configuration
   lakebase_database_name:
